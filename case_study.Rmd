@@ -36,7 +36,43 @@ data(nyc_airbnb)
 
 ## Brainstorm questions
 
-```{r}
+* Where are max and min airbnb prices?
+  * What are average prices?
+* Where are prices going up and down over time?
+* What's the relationship between number of reviews and average review?
+* Does room type affect availability?
+* What's the location of the unit?
+  * What areas are popular?
+* Are there repeat hosts?
+  * If so, what does that mean?
 
+```{r}
+max(pull(nyc_airbnb, price))
+min(pull(nyc_airbnb, price))
+mean(pull(nyc_airbnb, price))
+  
+summary(nyc_airbnb) #but not a tidy way
+```
+
+```{r}
+nyc_airbnb  |> 
+  ggplot(aes(x = price, fill = neighbourhood_group)) +
+  geom_histogram() +
+  facet_grid(. ~ neighbourhood_group) +
+  scale_x_continuous(limits = c(0, 250))
+#(this gives a color-coded histogram showing the distribution of prices by borough; Manhattan seems to be more uniformly distributed and possibly bimodal; the others seem right-skewed)
+```
+
+```{r}
+plot = ggplot(data = nyc_airbnb, aes(x = room_type, y = availability_365)) +
+  geom_violin()
+print(plot)
+```
+
+```{r}
+#repeat hosts
+nyc_airbnb %>%
+  filter(calculated_host_listings_count > 1) |> 
+  distinct(host_id, host_name, calculated_host_listings_count)
 ```
 
